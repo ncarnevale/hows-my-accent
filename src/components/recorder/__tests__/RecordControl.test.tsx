@@ -111,6 +111,31 @@ describe("RecordControl", () => {
     expect(toggleRecording).toHaveBeenCalledTimes(1);
   });
 
+  it("hides main record button after a take is recorded", () => {
+    const blob = new Blob(["audio"], { type: "audio/webm" });
+
+    vi.mocked(useAudioRecorder).mockReturnValue(
+      mockRecorderState({ status: "recorded", blob, toggleRecording })
+    );
+
+    render(<RecordControl onSubmit={onSubmit} />);
+
+    expect(
+      screen.queryByRole("button", {
+        name: /record your pronunciation|record again/i,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /try again/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /play recording/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /submit recording/i })
+    ).toBeInTheDocument();
+  });
+
   it("offers playback and submit after recording stops", async () => {
     const user = userEvent.setup();
     const blob = new Blob(["audio"], { type: "audio/webm" });
@@ -120,6 +145,10 @@ describe("RecordControl", () => {
     );
 
     render(<RecordControl onSubmit={onSubmit} />);
+
+    expect(
+      screen.getByRole("button", { name: /try again/i })
+    ).toBeInTheDocument();
 
     const playButton = screen.getByRole("button", { name: /play recording/i });
     expect(playButton).toBeInTheDocument();
@@ -137,6 +166,77 @@ describe("RecordControl", () => {
     );
 
     expect(onSubmit).toHaveBeenCalledWith(blob);
+  });
+
+  it("calls toggleRecording when Try again is pressed", async () => {
+    const user = userEvent.setup();
+    const blob = new Blob(["audio"], { type: "audio/webm" });
+
+    vi.mocked(useAudioRecorder).mockReturnValue(
+      mockRecorderState({ status: "recorded", blob, toggleRecording })
+    );
+
+    render(<RecordControl onSubmit={onSubmit} />);
+
+    await user.click(screen.getByRole("button", { name: /try again/i }));
+
+    expect(toggleRecording).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows Pause while playback is active", async () => {
+    const user = userEvent.setup();
+    const blob = new Blob(["audio"], { type: "audio/webm" });
+
+    vi.mocked(useAudioRecorder).mockReturnValue(
+      mockRecorderState({ status: "recorded", blob, toggleRecording })
+    );
+
+    render(<RecordControl onSubmit={onSubmit} />);
+
+    await user.click(
+      screen.getByRole("button", { name: /play recording/i })
+    );
+
+    const audio = document.querySelector("audio");
+    audio?.dispatchEvent(new Event("play"));
+
+    expect(
+      screen.getByRole("button", { name: /pause recording/i })
+    ).toBeInTheDocument();
+  });
+
+  it("pauses playback when Pause is pressed", async () => {
+    const user = userEvent.setup();
+    const blob = new Blob(["audio"], { type: "audio/webm" });
+    const pauseSpy = vi
+      .spyOn(HTMLMediaElement.prototype, "pause")
+      .mockImplementation(function (this: HTMLMediaElement) {
+        this.dispatchEvent(new Event("pause"));
+      });
+
+    vi.mocked(useAudioRecorder).mockReturnValue(
+      mockRecorderState({ status: "recorded", blob, toggleRecording })
+    );
+
+    render(<RecordControl onSubmit={onSubmit} />);
+
+    await user.click(
+      screen.getByRole("button", { name: /play recording/i })
+    );
+
+    const audio = document.querySelector("audio") as HTMLAudioElement;
+    audio.currentTime = 12;
+    audio.dispatchEvent(new Event("play"));
+
+    await user.click(
+      screen.getByRole("button", { name: /pause recording/i })
+    );
+
+    expect(pauseSpy).toHaveBeenCalled();
+    expect(audio.currentTime).toBe(12);
+    expect(
+      screen.getByRole("button", { name: /play recording/i })
+    ).toBeInTheDocument();
   });
 
   it("shows an inline error message in the error state", () => {

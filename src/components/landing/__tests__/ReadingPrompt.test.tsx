@@ -130,6 +130,15 @@ describe("ReadingPrompt", () => {
     );
     rerender(<ReadingPrompt onSubmit={onSubmit} />);
 
+    expect(
+      screen.queryByRole("button", {
+        name: /record your pronunciation|record again/i,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /try again/i })
+    ).toBeInTheDocument();
+
     const playButton = screen.getByRole("button", { name: /play recording/i });
     expect(playButton).toBeInTheDocument();
 
@@ -140,5 +149,32 @@ describe("ReadingPrompt", () => {
     );
 
     expect(onSubmit).toHaveBeenCalledWith(blob);
+  });
+
+  it("shows the main record button again after Try again starts a new take", async () => {
+    const user = userEvent.setup();
+    const blob = new Blob(["audio"], { type: "audio/webm" });
+
+    vi.mocked(useAudioRecorder).mockReturnValue(
+      mockRecorderState({ status: "recorded", blob, toggleRecording })
+    );
+
+    const { rerender } = render(<ReadingPrompt />);
+
+    await user.click(screen.getByRole("button", { name: /try again/i }));
+    expect(toggleRecording).toHaveBeenCalledTimes(1);
+
+    vi.mocked(useAudioRecorder).mockReturnValue(
+      mockRecorderState({
+        status: "recording",
+        stream: createMockMediaStream(),
+        toggleRecording,
+      })
+    );
+    rerender(<ReadingPrompt />);
+
+    expect(
+      screen.getByRole("button", { name: /stop recording/i })
+    ).toBeInTheDocument();
   });
 });

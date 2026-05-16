@@ -1,10 +1,22 @@
 "use client";
 
-import { Play } from "lucide-react";
-import { useRef, type RefObject } from "react";
+import { Pause, Play } from "lucide-react";
+import type { Ref } from "react";
 
 import type { RecordingStatus } from "@/hooks/useAudioRecorder";
 import { cn } from "@/lib/utils";
+
+type TypeRecordControlFooterProps = {
+  status: RecordingStatus;
+  hint: string;
+  error: string | null;
+  playbackUrl: string | null;
+  audioRef: Ref<HTMLAudioElement | null>;
+  isPlaying: boolean;
+  onPlaybackToggle: () => void;
+  onTryAgain: () => void;
+  onSubmit: () => void;
+};
 
 export function RecordControlFooter({
   status,
@@ -12,42 +24,53 @@ export function RecordControlFooter({
   error,
   playbackUrl,
   audioRef,
-  onPlay,
+  isPlaying,
+  onPlaybackToggle,
+  onTryAgain,
   onSubmit,
-}: {
-  status: RecordingStatus;
-  hint: string;
-  error: string | null;
-  playbackUrl: string | null;
-  audioRef: RefObject<HTMLAudioElement | null>;
-  onPlay: () => void;
-  onSubmit: () => void;
-}) {
+}: TypeRecordControlFooterProps) {
   const showPlayback = status === "recorded" && playbackUrl;
-  const showSubmit = status === "recorded";
+  const showActions = status === "recorded";
 
   return (
     <div className="flex flex-col items-center gap-2">
-      {showPlayback && (
+      {showPlayback && playbackUrl && (
         <PlaybackControls
           playbackUrl={playbackUrl}
           audioRef={audioRef}
-          onPlay={onPlay}
+          isPlaying={isPlaying}
+          onToggle={onPlaybackToggle}
         />
       )}
 
-      {showSubmit && (
-        <button
-          type="button"
-          onClick={onSubmit}
-          className={cn(
-            "inline-flex items-center justify-center rounded-full",
-            "bg-terracotta px-6 py-2.5 text-sm font-semibold text-background",
-            "shadow-sm transition-colors hover:bg-foreground/90",
-          )}
-        >
-          Submit
-        </button>
+      {showActions && (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onTryAgain}
+            aria-label="Try again"
+            className={cn(
+              "inline-flex items-center justify-center rounded-full border border-border/70",
+              "bg-card/80 px-4 py-2.5 text-sm font-medium text-foreground",
+              "shadow-sm backdrop-blur-sm transition-colors",
+              "hover:bg-card hover:border-terracotta/30",
+            )}
+          >
+            Try again
+          </button>
+          <button
+            type="button"
+            onClick={onSubmit}
+            aria-label="Submit recording"
+            className={cn(
+              "inline-flex items-center justify-center rounded-full",
+              "bg-terracotta px-6 py-2.5 text-sm font-semibold text-background",
+              "shadow-sm transition-colors hover:bg-foreground/90",
+            )}
+          >
+            Submit
+          </button>
+        </div>
       )}
 
       {status === "error" && error && (
@@ -59,32 +82,26 @@ export function RecordControlFooter({
   );
 }
 
-export function usePlayback() {
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const playRecording = () => {
-    void Promise.resolve(audioRef.current?.play()).catch(() => {});
-  };
-
-  return { audioRef, playRecording };
-}
-
 function PlaybackControls({
   playbackUrl,
   audioRef,
-  onPlay,
+  isPlaying,
+  onToggle,
 }: {
   playbackUrl: string;
-  audioRef: RefObject<HTMLAudioElement | null>;
-  onPlay: () => void;
+  audioRef: Ref<HTMLAudioElement | null>;
+  isPlaying: boolean;
+  onToggle: () => void;
 }) {
+  const label = isPlaying ? "Pause recording" : "Play recording";
+
   return (
     <>
       <audio ref={audioRef} src={playbackUrl} className="sr-only" />
       <button
         type="button"
-        onClick={onPlay}
-        aria-label="Play recording"
+        onClick={onToggle}
+        aria-label={label}
         className={cn(
           "inline-flex items-center gap-2 rounded-full border border-border/70",
           "bg-card/80 px-4 py-2 text-sm font-medium text-foreground",
@@ -92,8 +109,12 @@ function PlaybackControls({
           "hover:bg-card hover:border-terracotta/30",
         )}
       >
-        <Play className="size-4 fill-terracotta text-terracotta" />
-        Play recording
+        {isPlaying ? (
+          <Pause className="size-4 fill-current" strokeWidth={0} />
+        ) : (
+          <Play className="size-4 fill-terracotta text-terracotta" />
+        )}
+        {label}
       </button>
     </>
   );

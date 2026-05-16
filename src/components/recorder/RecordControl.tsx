@@ -1,12 +1,10 @@
 "use client";
 
-import {
-  RecordControlFooter,
-  usePlayback,
-} from "@/components/recorder/RecordControlFooter";
+import { RecordControlFooter } from "@/components/recorder/RecordControlFooter";
 import { RecordToggleButton } from "@/components/recorder/RecordToggleButton";
 import { RecordingWaveform } from "@/components/recorder/RecordingWaveform";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
+import { usePlayback } from "@/hooks/usePlayback";
 import { usePlaybackUrl } from "@/hooks/usePlaybackUrl";
 
 export type RecordControlProps = {
@@ -15,12 +13,8 @@ export type RecordControlProps = {
 
 export function RecordControl({ onSubmit }: RecordControlProps) {
   const { status, blob, stream, error, toggleRecording } = useAudioRecorder();
-  const { audioRef, playRecording } = usePlayback();
   const playbackUrl = usePlaybackUrl(blob);
-
-  const handleToggleRecord = () => {
-    void toggleRecording();
-  };
+  const { audioRef, isPlaying, togglePlayback } = usePlayback(playbackUrl);
 
   const handleSubmit = () => {
     if (blob) onSubmit(blob);
@@ -39,7 +33,6 @@ export function RecordControl({ onSubmit }: RecordControlProps) {
       hint = "Tap stop when you finish reading";
       break;
     case "recorded":
-      buttonLabel = "Record again";
       hint = "Listen back, then submit when you're ready";
       break;
     case "error":
@@ -50,11 +43,13 @@ export function RecordControl({ onSubmit }: RecordControlProps) {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <RecordToggleButton
-        status={status}
-        label={buttonLabel}
-        onToggle={handleToggleRecord}
-      />
+      {status !== "recorded" && (
+        <RecordToggleButton
+          status={status}
+          label={buttonLabel}
+          onToggle={() => toggleRecording()}
+        />
+      )}
 
       {status === "recording" && stream && (
         <RecordingWaveform stream={stream} />
@@ -66,7 +61,9 @@ export function RecordControl({ onSubmit }: RecordControlProps) {
         error={error}
         playbackUrl={playbackUrl}
         audioRef={audioRef}
-        onPlay={playRecording}
+        isPlaying={isPlaying}
+        onPlaybackToggle={togglePlayback}
+        onTryAgain={() => toggleRecording()}
         onSubmit={handleSubmit}
       />
     </div>
