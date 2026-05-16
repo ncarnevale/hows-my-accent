@@ -6,36 +6,6 @@ import { useRef, type RefObject } from "react";
 import type { RecordingStatus } from "@/hooks/useAudioRecorder";
 import { cn } from "@/lib/utils";
 
-function PlaybackControls({
-  playbackUrl,
-  audioRef,
-  onPlay,
-}: {
-  playbackUrl: string;
-  audioRef: RefObject<HTMLAudioElement | null>;
-  onPlay: () => void;
-}) {
-  return (
-    <>
-      <audio ref={audioRef} src={playbackUrl} className="sr-only" />
-      <button
-        type="button"
-        onClick={onPlay}
-        aria-label="Play recording"
-        className={cn(
-          "inline-flex items-center gap-2 rounded-full border border-border/70",
-          "bg-card/80 px-4 py-2 text-sm font-medium text-foreground",
-          "shadow-sm backdrop-blur-sm transition-colors",
-          "hover:bg-card hover:border-terracotta/30",
-        )}
-      >
-        <Play className="size-4 fill-terracotta text-terracotta" />
-        Play recording
-      </button>
-    </>
-  );
-}
-
 export function RecordControlFooter({
   status,
   hint,
@@ -97,4 +67,34 @@ export function usePlayback() {
   };
 
   return { audioRef, playRecording };
+}
+
+function PlaybackControls({
+  playbackUrl,
+  audioRef,
+  onPlay,
+}: {
+  playbackUrl: string;
+  audioRef: RefObject<HTMLAudioElement | null>;
+  onPlay: () => void;
+}) {
+  return (
+    <>
+      <audio ref={audioRef} src={playbackUrl} className="sr-only" />
+      <button
+        type="button"
+        onClick={onPlay}
+        aria-label="Play recording"
+        className={cn(
+          "inline-flex items-center gap-2 rounded-full border border-border/70",
+          "bg-card/80 px-4 py-2 text-sm font-medium text-foreground",
+          "shadow-sm backdrop-blur-sm transition-colors",
+          "hover:bg-card hover:border-terracotta/30",
+        )}
+      >
+        <Play className="size-4 fill-terracotta text-terracotta" />
+        Play recording
+      </button>
+    </>
+  );
 }
