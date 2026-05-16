@@ -5,14 +5,14 @@ import { ReadingPrompt } from "@/components/landing/ReadingPrompt";
 import { MVP_PASSAGE_DISPLAY } from "@/data/passages";
 
 describe("ReadingPrompt", () => {
-  it("renders instructions and formatted passage", () => {
+  it("renders the step indicator, prompt copy, and passage", () => {
     render(<ReadingPrompt />);
 
-    expect(
-      screen.getByText(/tap record, then read the passage aloud/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/step 1 · read aloud/i)).toBeInTheDocument();
+    expect(screen.getByText(/take a breath/i)).toBeInTheDocument();
+    expect(screen.getByText(/natural pace/i)).toBeInTheDocument();
     expect(screen.getByText(MVP_PASSAGE_DISPLAY)).toBeInTheDocument();
-    expect(screen.getByText("Your passage")).toBeInTheDocument();
+    expect(screen.getByText(/your passage/i)).toBeInTheDocument();
   });
 
   it("renders the record placeholder", () => {

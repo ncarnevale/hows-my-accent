@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Fraunces, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  axes: ["SOFT", "opsz"],
 });
 
 const geistMono = Geist_Mono({
@@ -16,9 +20,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "How's My Accent",
+  title: "How's My Accent · Latin American Spanish pronunciation",
   description:
-    "Practice Latin American Spanish pronunciation with AI-assisted feedback.",
+    "Read a Spanish passage aloud and get warm, AI-assisted feedback on your Latin American accent.",
 };
 
 export default function RootLayout({
@@ -29,7 +33,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        "h-full antialiased font-sans",
+        inter.variable,
+        fraunces.variable,
+        geistMono.variable
+      )}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
