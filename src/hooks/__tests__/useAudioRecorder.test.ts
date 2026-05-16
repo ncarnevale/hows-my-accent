@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
-import { installMediaMocks } from "@/test/mediaMocks";
+import { installMediaMocks } from "./mediaMocks";
 
 describe("useAudioRecorder", () => {
   let mocks: ReturnType<typeof installMediaMocks>;
