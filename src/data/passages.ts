@@ -1,16 +1,5 @@
 // MVP: single hardcoded Spanish passage (rolled R, ñ, ll, soft/hard G, etc.)
 
-/** Collapses source line-wraps into flowing text; blank lines become paragraph breaks. */
-export function formatPassageText(text: string): string {
-  return text
-    .trim()
-    .split(/\n\s*\n/)
-    .map((paragraph) =>
-      paragraph.replace(/\s*\n\s*/g, " ").replace(/\s+/g, " ").trim()
-    )
-    .join("\n\n");
-}
-
 export const MVP_PASSAGE = {
   id: "lam-intro",
   text: `
@@ -20,6 +9,6 @@ export const MVP_PASSAGE = {
     calle estaba tranquila. Esta historia no tiene ningún sentido, pero debería ayudarles con
     la pronunciación.
   `,
-};
+} as const;
 
-export const MVP_PASSAGE_DISPLAY = formatPassageText(MVP_PASSAGE.text);
+export const PASSAGES = [MVP_PASSAGE] as const;

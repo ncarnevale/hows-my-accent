@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LandingPage } from "@/components/landing/LandingPage";
-import { MVP_PASSAGE_DISPLAY } from "@/data/passages";
+import { MVP_PASSAGE_DISPLAY } from "@/lib/passages";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
 
 vi.mock("@/hooks/useAudioRecorder");

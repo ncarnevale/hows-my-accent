@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ReadingPrompt } from "@/components/landing/ReadingPrompt";
-import { MVP_PASSAGE_DISPLAY } from "@/data/passages";
+import { MVP_PASSAGE_DISPLAY } from "@/lib/passages";
 import { createMockMediaStream } from "@/hooks/__tests__/mediaMocks";
 import {
   useAudioRecorder,

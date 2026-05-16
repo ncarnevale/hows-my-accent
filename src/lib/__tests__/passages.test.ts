@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 
+import { MVP_PASSAGE } from "@/data/passages";
 import {
-  MVP_PASSAGE,
   MVP_PASSAGE_DISPLAY,
   formatPassageText,
-} from "@/data/passages";
+  getPassageById,
+} from "@/lib/passages";
 
 describe("formatPassageText", () => {
   it("collapses source line wraps into a single flowing paragraph", () => {
@@ -26,5 +27,15 @@ describe("formatPassageText", () => {
 describe("MVP_PASSAGE_DISPLAY", () => {
   it("matches formatted passage text", () => {
     expect(MVP_PASSAGE_DISPLAY).toBe(formatPassageText(MVP_PASSAGE.text));
+  });
+});
+
+describe("getPassageById", () => {
+  it("returns MVP passage for lam-intro", () => {
+    expect(getPassageById("lam-intro")).toBe(MVP_PASSAGE);
+  });
+
+  it("returns undefined for unknown ids", () => {
+    expect(getPassageById("missing")).toBeUndefined();
   });
 });

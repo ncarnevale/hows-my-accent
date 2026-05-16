@@ -1,9 +1,23 @@
+import { compareTranscriptToPassage } from "@/lib/compareTranscript";
+import { formatPassageText, getPassageById } from "@/lib/passages";
+import { transcribeAudio } from "@/lib/transcribeAudio";
 import type { AnalyzeResponse } from "@/types/pronunciation";
 
-// Whisper transcription + heuristic compare vs expected passage (see MVP_SPEC).
 export async function analyzePronunciation(
-  _audio: Blob,
-  _passageId: string,
+  audio: Blob,
+  passageId: string,
 ): Promise<AnalyzeResponse> {
-  throw new Error("Not implemented");
+  const passage = getPassageById(passageId);
+  if (!passage) {
+    throw new Error("Unknown passage");
+  }
+
+  const transcript = await transcribeAudio(audio);
+  const expectedPassage = formatPassageText(passage.text);
+  const mismatchedWords = compareTranscriptToPassage(
+    expectedPassage,
+    transcript,
+  );
+
+  return { transcript, mismatchedWords };
 }

@@ -8,6 +8,5 @@ export type PronunciationIssue = {
 
 export type AnalyzeResponse = {
   transcript: string;
-  score: number;
-  issues: PronunciationIssue[];
+  mismatchedWords: string[];
 };

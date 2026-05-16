@@ -1,4 +1,4 @@
-import { MVP_PASSAGE_DISPLAY } from "@/data/passages";
+import { MVP_PASSAGE_DISPLAY } from "@/lib/passages";
 
 const PASSAGE_SOUNDS = ["rr", "ñ", "ll", "j", "g", "ó"];
 
