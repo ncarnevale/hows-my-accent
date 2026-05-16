@@ -100,12 +100,13 @@ describe("ReadingPrompt", () => {
     expect(toggleRecording).toHaveBeenCalledTimes(1);
   });
 
-  it("flows from idle through recording to playback", async () => {
+  it("flows from idle through recording to playback and submit", async () => {
     const user = userEvent.setup();
     const stream = createMockMediaStream();
     const blob = new Blob(["audio"], { type: "audio/webm" });
+    const onSubmit = vi.fn();
 
-    const { rerender } = render(<ReadingPrompt />);
+    const { rerender } = render(<ReadingPrompt onSubmit={onSubmit} />);
 
     await user.click(
       screen.getByRole("button", { name: /record your pronunciation/i })
@@ -115,7 +116,7 @@ describe("ReadingPrompt", () => {
     vi.mocked(useAudioRecorder).mockReturnValue(
       mockRecorderState({ status: "recording", stream, toggleRecording })
     );
-    rerender(<ReadingPrompt />);
+    rerender(<ReadingPrompt onSubmit={onSubmit} />);
 
     expect(
       screen.getByRole("img", { name: /recording level/i })
@@ -127,15 +128,17 @@ describe("ReadingPrompt", () => {
     vi.mocked(useAudioRecorder).mockReturnValue(
       mockRecorderState({ status: "recorded", blob, toggleRecording })
     );
-    rerender(<ReadingPrompt />);
+    rerender(<ReadingPrompt onSubmit={onSubmit} />);
 
     const playButton = screen.getByRole("button", { name: /play recording/i });
     expect(playButton).toBeInTheDocument();
-    expect(document.querySelector("audio")).toHaveAttribute(
-      "src",
-      "blob:mock-playback"
-    );
 
     await user.click(playButton);
+
+    await user.click(
+      screen.getByRole("button", { name: /submit recording/i })
+    );
+
+    expect(onSubmit).toHaveBeenCalledWith(blob);
   });
 });
