@@ -42,11 +42,11 @@ export function RecordControlFooter({
           onClick={onSubmit}
           className={cn(
             "inline-flex items-center justify-center rounded-full",
-            "bg-foreground px-6 py-2.5 text-sm font-semibold text-background",
+            "bg-terracotta px-6 py-2.5 text-sm font-semibold text-background",
             "shadow-sm transition-colors hover:bg-foreground/90",
           )}
         >
-          Submit recording
+          Submit
         </button>
       )}
 
