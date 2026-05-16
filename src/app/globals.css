@@ -144,6 +144,15 @@
   html {
     @apply font-sans;
   }
+  /* Native <button> defaults to arrow cursor in browsers; shadcn Button sets
+     cursor-pointer explicitly — this keeps raw buttons consistent app-wide. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
 @keyframes halo-pulse {

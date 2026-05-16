@@ -10,6 +10,29 @@ type RecordingWaveformProps = {
   stream: MediaStream;
 };
 
+/** Speech energy sits in the lower ~50% of FFT bins; avoid mapping bars to silent highs. */
+function getUsableBinCount(binCount: number) {
+  return Math.max(16, Math.floor(binCount / 2));
+}
+
+/** Log-spaced FFT bin ranges so voice energy fills all bars within the usable spectrum. */
+function buildLogBarRanges(usableBinCount: number, barCount: number) {
+  const maxLog = Math.log(usableBinCount);
+
+  return Array.from({ length: barCount }, (_, barIndex) => {
+    const start =
+      barIndex === 0
+        ? 0
+        : Math.floor(Math.exp((barIndex / barCount) * maxLog));
+    const end =
+      barIndex === barCount - 1
+        ? usableBinCount
+        : Math.floor(Math.exp(((barIndex + 1) / barCount) * maxLog));
+
+    return { start, end: Math.max(start + 1, end) };
+  });
+}
+
 function getAudioContextConstructor():
   | (typeof window)["AudioContext"]
   | undefined {
@@ -43,18 +66,19 @@ export function RecordingWaveform({ stream }: RecordingWaveformProps) {
     source.connect(analyser);
 
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    const sliceSize = Math.max(1, Math.floor(dataArray.length / BAR_COUNT));
+    const usableBinCount = getUsableBinCount(dataArray.length);
+    const barRanges = buildLogBarRanges(usableBinCount, BAR_COUNT);
 
     const tick = () => {
       analyser.getByteFrequencyData(dataArray);
 
-      const heights = Array.from({ length: BAR_COUNT }, (_, barIndex) => {
-        const start = barIndex * sliceSize;
+      const heights = barRanges.map(({ start, end }) => {
         let sum = 0;
-        for (let i = 0; i < sliceSize; i += 1) {
-          sum += dataArray[start + i] ?? 0;
+        for (let i = start; i < end; i += 1) {
+          sum += dataArray[i] ?? 0;
         }
-        const average = sum / sliceSize;
+        const count = end - start;
+        const average = count > 0 ? sum / count : 0;
         return Math.max(0.12, average / 255);
       });
 
