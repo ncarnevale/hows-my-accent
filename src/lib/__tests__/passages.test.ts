@@ -12,9 +12,9 @@ describe("formatPassageText", () => {
     const formatted = formatPassageText(MVP_PASSAGE.text);
 
     expect(formatted).not.toMatch(/\n(?!\n)/);
-    expect(formatted).toContain("Queridos amigos");
-    expect(formatted).toContain("la pronunciación.");
-    expect(formatted).not.toContain("vi un\n");
+    expect(formatted).toContain("Una olla grande");
+    expect(formatted).toContain("que mundo loquísimo.");
+    expect(formatted).not.toContain("café\nde");
   });
 
   it("preserves paragraph breaks from blank lines in source", () => {

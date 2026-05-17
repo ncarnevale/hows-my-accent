@@ -3,14 +3,37 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
+import { AnalysisLoading } from "@/components/feedback/AnalysisLoading";
+import { AnalysisResults } from "@/components/feedback/AnalysisResults";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { ReadingPrompt } from "@/components/landing/ReadingPrompt";
 import { Button } from "@/components/ui/button";
+import { MVP_PASSAGE } from "@/data/passages";
+import { useAnalyzeRecording } from "@/hooks/useAnalyzeRecording";
 
-type Step = "landing" | "prompt";
+type Step = "landing" | "prompt" | "analyzing";
 
 export function LandingPage() {
   const [step, setStep] = useState<Step>("landing");
+  const { status, result, submit, reset } = useAnalyzeRecording(MVP_PASSAGE.id);
+
+  const handleBack = () => {
+    if (step === "prompt") {
+      setStep("landing");
+    } else if (step === "analyzing") {
+      reset();
+      setStep("prompt");
+    }
+  };
+
+  const handleSubmit = async (blob: Blob) => {
+    setStep("analyzing");
+    if ((await submit(blob)) === "error") {
+      handleBack();
+    }
+  };
+
+  const showHeaderBack = step === "prompt" || step === "analyzing";
 
   return (
     <div className="relative flex min-h-full flex-1 flex-col overflow-hidden ambient-backdrop">
@@ -22,11 +45,11 @@ export function LandingPage() {
       <div className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col px-5 py-6 sm:px-8 sm:py-10">
         <header className="mb-10 flex items-center justify-between sm:mb-14">
           <BrandMark />
-          {step === "prompt" ? (
+          {showHeaderBack ? (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setStep("landing")}
+              onClick={handleBack}
               className="gap-1.5 text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="size-4" />
@@ -44,11 +67,17 @@ export function LandingPage() {
         </header>
 
         <main className="flex flex-1 flex-col items-center justify-center">
-          {step === "landing" ? (
+          {step === "landing" && (
             <LandingHero onStart={() => setStep("prompt")} />
-          ) : (
-            <ReadingPrompt />
           )}
+          {step === "analyzing" && status === "loading" && <AnalysisLoading />}
+          {step === "analyzing" && status === "success" && (
+            <AnalysisResults
+              words={result?.mismatchedWords ?? []}
+              onBack={handleBack}
+            />
+          )}
+          {step === "prompt" && <ReadingPrompt onSubmit={handleSubmit} />}
         </main>
 
         <footer className="mt-12 flex items-center justify-center gap-2 text-xs text-muted-foreground/80 sm:mt-16">

@@ -23,12 +23,52 @@ describe("compareTranscriptToPassage", () => {
     expect(compareTranscriptToPassage(expected, transcript)).toEqual([]);
   });
 
-  it("preserves Unicode letters such as ñ and accented characters when comparing", () => {
+  it("ignores vowel accent differences when comparing", () => {
+    const expected = "La niña caminó rápido";
+    const transcript = "la niña camino rapido";
+
+    expect(compareTranscriptToPassage(expected, transcript)).toEqual([]);
+  });
+
+  it("still treats ñ as distinct from n", () => {
     const expected = "La niña caminó";
-    const transcript = "la niña camino";
+    const transcript = "la nina camino";
+
+    expect(compareTranscriptToPassage(expected, transcript)).toEqual(["niña"]);
+  });
+
+  it("returns lowercased passage spelling with accents preserved on mismatches", () => {
+    const expected = "Él caminó ayer";
+    const transcript = "ella camina mañana";
 
     expect(compareTranscriptToPassage(expected, transcript)).toEqual([
+      "ayer",
       "caminó",
+      "él",
+    ]);
+  });
+
+  it("lowercases capitalized expected words in results", () => {
+    const expected = "Cera del sur";
+    const transcript = "sera del sur";
+
+    expect(compareTranscriptToPassage(expected, transcript)).toEqual(["cera"]);
+  });
+
+  it("dedupes and alphabetizes mismatched words", () => {
+    const expected = "perro come perro";
+    const transcript = "pero come pero";
+
+    expect(compareTranscriptToPassage(expected, transcript)).toEqual(["perro"]);
+  });
+
+  it("alphabetizes mismatches from positional compare", () => {
+    const expected = "zebra alpha beta";
+    const transcript = "zebra wrong gamma";
+
+    expect(compareTranscriptToPassage(expected, transcript)).toEqual([
+      "alpha",
+      "beta",
     ]);
   });
 
@@ -37,8 +77,8 @@ describe("compareTranscriptToPassage", () => {
     const transcript = "uno dos";
 
     expect(compareTranscriptToPassage(expected, transcript)).toEqual([
-      "tres",
       "cuatro",
+      "tres",
     ]);
   });
 

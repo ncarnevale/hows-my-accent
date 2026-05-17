@@ -13,7 +13,7 @@ export function useAnalyzeRecording(passageId: string) {
   const [error, setError] = useState<Error | null>(null);
 
   const submit = useCallback(
-    async (blob: Blob) => {
+    async (blob: Blob): Promise<"success" | "error"> => {
       setStatus("loading");
       setError(null);
       setResult(null);
@@ -21,9 +21,11 @@ export function useAnalyzeRecording(passageId: string) {
         const data = await analyzeRecording(blob, passageId);
         setResult(data);
         setStatus("success");
+        return "success";
       } catch (e) {
         setError(e instanceof Error ? e : new Error(String(e)));
         setStatus("error");
+        return "error";
       }
     },
     [passageId],

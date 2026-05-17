@@ -9,8 +9,30 @@ function tokenizePassage(passage: string): { original: string; normalized: strin
     }));
 }
 
+const N_TILDE_PLACEHOLDER = "\uE000";
+
+function stripVowelAccents(token: string): string {
+  return token
+    .replace(/ñ/g, N_TILDE_PLACEHOLDER)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replaceAll(N_TILDE_PLACEHOLDER, "ñ");
+}
+
+function stripEdgePunctuation(token: string): string {
+  return token.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/u, "");
+}
+
 function normalizeToken(token: string): string {
-  return token.toLowerCase().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/u, "");
+  return stripVowelAccents(stripEdgePunctuation(token).toLocaleLowerCase("es"));
+}
+
+function toDisplayToken(token: string): string {
+  return stripEdgePunctuation(token).toLocaleLowerCase("es");
+}
+
+function finalizeMismatches(words: string[]): string[] {
+  return [...new Set(words)].sort((a, b) => a.localeCompare(b, "es"));
 }
 
 export function compareTranscriptToPassage(
@@ -26,9 +48,9 @@ export function compareTranscriptToPassage(
     const actual = transcriptTokens[i];
 
     if (!actual || expected.normalized !== actual.normalized) {
-      mismatchedWords.push(expected.original);
+      mismatchedWords.push(toDisplayToken(expected.original));
     }
   }
 
-  return mismatchedWords;
+  return finalizeMismatches(mismatchedWords);
 }
