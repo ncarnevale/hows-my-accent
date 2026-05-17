@@ -20,9 +20,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "How's My Accent · Latin American Spanish pronunciation",
-  description:
-    "Read a Spanish passage aloud and get warm, AI-assisted feedback on your Latin American accent.",
+  metadataBase: new URL(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
+  title: { default: "How's My Accent · Latin American Spanish pronunciation", template: "%s · How's My Accent" },
+  description: "Practice Latin American Spanish pronunciation. Read a passage aloud and get warm, AI-assisted accent feedback.",
+  keywords: ["Spanish accent", "Latin American Spanish", "pronunciation", "accent practice", "learn Spanish"],
+  openGraph: { type: "website", locale: "en_US", title: "How's My Accent", description: "Practice Latin American Spanish pronunciation with AI-assisted accent feedback." },
+  twitter: { card: "summary", title: "How's My Accent", description: "Practice Latin American Spanish pronunciation with AI-assisted accent feedback." },
+  robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
 };
 
 export default function RootLayout({
