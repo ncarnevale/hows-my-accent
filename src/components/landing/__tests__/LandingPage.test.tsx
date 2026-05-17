@@ -163,12 +163,13 @@ describe("LandingPage", () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText("perro")).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: /pronunciation results/i }),
+      ).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByRole("heading", { name: /pronunciation results/i })
-    ).toBeInTheDocument();
+    expect(screen.getByText(/\d+ \/ 10/)).toBeInTheDocument();
+    expect(screen.getByText(/rolled rr/i)).toBeInTheDocument();
     expect(analyzeRecording).toHaveBeenCalledWith(blob, "lam-intro");
   });
 });
