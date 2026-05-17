@@ -39,8 +39,8 @@ export function LandingHero({ onStart }: LandingHeroProps) {
           ?
         </h1>
         <p className="mx-auto max-w-md text-balance text-base text-muted-foreground sm:text-lg">
-          Read a short passage out loud and get warm, honest feedback on your
-          Latin American Spanish — sound by sound, word by word.
+          Read a short passage out loud and get AI-assisted feedback on your
+          Latin American Spanish pronunciation.
         </p>
       </div>
 

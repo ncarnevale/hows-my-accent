@@ -8,8 +8,10 @@ describe("ReadingPromptPassage", () => {
   it("renders the passage label and story text", () => {
     render(<ReadingPromptPassage />);
 
-    expect(screen.getByText(/your passage/i)).toBeInTheDocument();
-    expect(screen.getByText(/a short story · latam spanish/i)).toBeInTheDocument();
+    expect(screen.getByText(/sample passage/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/simple pronunciation test · latam spanish/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(MVP_PASSAGE_DISPLAY)).toBeInTheDocument();
   });
 

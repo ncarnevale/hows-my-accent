@@ -73,11 +73,11 @@ describe("ReadingPrompt", () => {
   it("renders the step indicator, prompt copy, and passage", () => {
     render(<ReadingPrompt />);
 
-    expect(screen.getByText(/step 1 · read aloud/i)).toBeInTheDocument();
     expect(screen.getByText(/take a breath/i)).toBeInTheDocument();
-    expect(screen.getByText(/natural pace/i)).toBeInTheDocument();
+    expect(screen.getByText(/slowly/i)).toBeInTheDocument();
+    expect(screen.getByText(/naturally/i)).toBeInTheDocument();
     expect(screen.getByText(MVP_PASSAGE_DISPLAY)).toBeInTheDocument();
-    expect(screen.getByText(/your passage/i)).toBeInTheDocument();
+    expect(screen.getByText(/sample passage/i)).toBeInTheDocument();
   });
 
   it("renders an enabled record button when idle", () => {

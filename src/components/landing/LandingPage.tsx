@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Globe, Languages, Mic, Plane } from "lucide-react";
 
 import { AnalysisLoading } from "@/components/feedback/AnalysisLoading";
 import { AnalysisResults } from "@/components/feedback/AnalysisResults";
@@ -81,30 +81,24 @@ export function LandingPage() {
         </main>
 
         <footer className="mt-12 flex items-center justify-center gap-2 text-xs text-muted-foreground/80 sm:mt-16">
-          <span>No sign-up</span>
-          <span aria-hidden className="text-muted-foreground/40">
-            ·
-          </span>
-          <span>Audio is never stored</span>
-          <span aria-hidden className="text-muted-foreground/40">
-            ·
-          </span>
-          <span>Hecho con cariño</span>
+          <span>Hecho con cariño :)</span>
         </footer>
       </div>
     </div>
   );
 }
 
+const BRAND_MARK_CLASS =
+  "relative grid size-8 place-items-center rounded-lg bg-linear-to-br from-terracotta to-marigold text-primary-foreground shadow-sm ring-1 ring-foreground/5";
+
 function BrandMark() {
   return (
     <div className="flex items-center gap-2.5">
-      <span
-        aria-hidden
-        className="relative grid size-8 place-items-center rounded-lg bg-linear-to-br from-terracotta to-marigold text-primary-foreground shadow-sm ring-1 ring-foreground/5"
-      >
-        <span className="font-serif text-[18px] leading-none">~</span>
-      </span>
+      <div className="flex items-center gap-1.5" aria-hidden>
+        <span className={BRAND_MARK_CLASS}>
+          <Mic className="size-4" strokeWidth={2.25} />
+        </span>
+      </div>
       <span className="text-sm font-bold font-serif tracking-tight text-foreground">
         How's My Accent?
       </span>

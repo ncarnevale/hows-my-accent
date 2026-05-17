@@ -31,15 +31,10 @@ export function AnalysisResults({
           Pronunciation results
         </h2>
 
-        <div className="flex flex-col gap-1">
-          <p
-            className="font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl"
-            aria-label={`${score} out of 10, ${label}`}
-          >
-            {score} / 10
-            <span className="text-muted-foreground"> · </span>
-            <span className="text-2xl font-medium sm:text-3xl">{label}</span>
-          </p>
+        <div className="flex items-center justify-center gap-1 font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+          <div>{score} / 10</div>
+          <div className="text-muted-foreground px-2 pb-1"> · </div>
+          <div className="text-2xl font-medium sm:text-3xl">{label}</div>
         </div>
 
         {isPerfect ? (
@@ -48,7 +43,7 @@ export function AnalysisResults({
           </p>
         ) : recommendations.length > 0 ? (
           <div className="mx-auto flex w-full max-w-md flex-col gap-3 text-left">
-            <p className="text-center text-sm font-medium uppercase tracking-wide text-muted-foreground">
+            <p className="text-center pb-1 text-sm font-medium uppercase trackaing-wide text-muted-foreground">
               Sounds to practice
             </p>
             <ul className="flex flex-col gap-2">

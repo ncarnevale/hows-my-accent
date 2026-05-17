@@ -18,10 +18,10 @@ export function ReadingPromptPassage() {
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-col">
             <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-              Your passage
+              Sample passage
             </span>
             <span className="text-sm text-muted-foreground/90">
-              A short story · LATAM Spanish
+              Simple pronunciation test · LATAM Spanish
             </span>
           </div>
           <ul className="hidden flex-wrap justify-end gap-1 sm:flex">

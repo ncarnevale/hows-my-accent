@@ -44,7 +44,7 @@ export function RecordControlFooter({
       )}
 
       {showActions && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-2">
           <button
             type="button"
             onClick={onTryAgain}

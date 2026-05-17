@@ -13,9 +13,7 @@ describe("AnalysisResults", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/10 \/ 10/)).toBeInTheDocument();
     expect(screen.getByText(/perfect!/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/nailed it — every word matched the passage/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/nailed it! no notes!/i)).toBeInTheDocument();
     expect(screen.queryByText(/sounds to practice/i)).not.toBeInTheDocument();
   });
 
