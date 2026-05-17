@@ -1,12 +1,10 @@
+import { tokenizePassageWords } from "@/lib/passageTokens";
+
 function tokenizePassage(passage: string): { original: string; normalized: string }[] {
-  return passage
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((original) => ({
-      original,
-      normalized: normalizeToken(original),
-    }));
+  return tokenizePassageWords(passage).map((original) => ({
+    original,
+    normalized: normalizeToken(original),
+  }));
 }
 
 const N_TILDE_PLACEHOLDER = "\uE000";
